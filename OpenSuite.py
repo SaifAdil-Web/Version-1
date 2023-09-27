@@ -27,8 +27,8 @@ workbook = load_workbook(excel_file)
 sheet = workbook["Login_creds"]
 
 # Read username and password from Excel
-username = sheet.cell(row=2, column=1).value  # Assuming username is in cell A2
-password = sheet.cell(row=2, column=2).value  # Assuming password is in cell B2
+username = sheet.cell(row=2, column=1).value  # username is in cell A2
+password = sheet.cell(row=2, column=2).value  # password is in cell B2
 
 Username_field = driver.find_element(By.ID, "UserName")
 Username_field.send_keys(username)
@@ -45,6 +45,7 @@ driver.find_element(By.ID, "btn_Submit").click()
 excel_file = "input_data.xlsx"
 workbook = load_workbook(excel_file)
 sheet = workbook['Elements']
+
 # Read element names and regex locators from Excel
 elements_data = []
 for row in sheet.iter_rows(min_row=2, max_row=sheet.max_row, min_col=1, max_col=2):
@@ -64,6 +65,12 @@ for element_name, regex_locator in elements_data[1:]:
 
     # Define actions based on element name
     if element_name == "Bulk Operations - Imports":
+
+        # Load data from Excel file
+        excel_file = "input_data.xlsx"
+        workbook = load_workbook(excel_file)
+        sheet = workbook['Bulk Import']
+
         button = driver.find_element(By.XPATH, "/html/body/div[10]/div[2]/div[4]/div[1]/div[1]/div/div[1]/div[2]/div[2]/div[1]/a[2]")
         button.click()
 
@@ -72,8 +79,12 @@ for element_name, regex_locator in elements_data[1:]:
 
         time.sleep(3)
 
+
+
         # Find and click the specific option you want (e.g., "-- Select --")
-        option_to_select = driver.find_element(By.XPATH,"//li[text()='P0001 - CC000011 Bill Import']")
+        element_name, ImportFormat = elements_data[4]
+        print(ImportFormat)
+        option_to_select = driver.find_element(By.XPATH,f"//li[text()=\'{ImportFormat}\']")
         option_to_select.click()
         time.sleep(3)
 
@@ -85,12 +96,6 @@ for element_name, regex_locator in elements_data[1:]:
             # If it's not checked, click it to check it
             checkbox.click()
             print("checkbox checked")
-
-        # Load data from Excel file
-        excel_file = "input_data.xlsx"
-        workbook = load_workbook(excel_file)
-        sheet = workbook['Bulk Import']
-
 
         # Read element names and regex locators from Excel
         elements_data = []
@@ -143,6 +148,7 @@ for element_name, regex_locator in elements_data[1:]:
 time.sleep(5)
 driver.close()
 driver.quit()
+
 
 
 
